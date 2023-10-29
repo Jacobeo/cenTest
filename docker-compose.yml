@@ -4,13 +4,19 @@ services:
   api:
     image: ${DOCKER_REGISTRY-}api
     build:
-      context: .
-      dockerfile: src/API/Dockerfile
+      context: ./src/API
+      dockerfile: Dockerfile
   db:
     image: mcr.microsoft.com/mssql/server:2022-latest
     environment:
       SA_PASSWORD: "uwhADwJAZdWoRnNTf4r6"
       ACCEPT_EULA: "Y"
     ports:
-      - "1433:1433"  
-  
+      - "1433:1433"
+    volumes:
+      - ./db:/db
+    command:
+      - /bin/bash
+      - -c
+      - |
+        /opt/mssql/bin/sqlservr & sleep 20 ; /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P 'uwhADwJAZdWoRnNTf4r6' -d master -i /db/initialize-db.sql ; sleep infinity
