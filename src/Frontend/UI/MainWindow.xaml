@@ -1,0 +1,25 @@
+﻿<Window x:Class="UI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="350" Width="525">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <ListBox ItemsSource="{Binding Districts}"
+                 SelectedItem="{Binding SelectedDistrict}"
+                 DisplayMemberPath="Name" />
+        <StackPanel Grid.Column="1" Margin="10">
+            <TextBlock Text="Stores" />
+            <ListBox ItemsSource="{Binding Stores}"
+                     DisplayMemberPath="Name" />
+            <TextBlock Text="Salespersons" />
+            <ListBox ItemsSource="{Binding Salespersons}"
+                     DisplayMemberPath="Name" />
+        </StackPanel>
+    </Grid>
+</Window>

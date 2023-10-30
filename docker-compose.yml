@@ -4,12 +4,15 @@ services:
   api:
     image: ${DOCKER_REGISTRY-}api
     build:
-      context: ./src/API
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: src/Backend/api/Dockerfile
     environment:
       ConnectionStrings__DefaultConnection: "Server=mssql;Database=master;User Id=Centrica;Password=${Centrica_PASSWORD}"
     depends_on:
       - mssql
+    ports:
+      - "5000:80"
+      - "5001:443"
   mssql:
     image: mcr.microsoft.com/mssql/server:2022-latest
     environment:
