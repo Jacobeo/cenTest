@@ -1,6 +1,6 @@
 ﻿using System.Data;
 
-namespace DataAccess.Repositories.Interfaces
+namespace Backend.DataAccess.Repositories.Interfaces
 {
     public interface IDbConnectionFactory
     {

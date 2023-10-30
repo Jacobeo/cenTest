@@ -1,9 +1,10 @@
-﻿using Core.Models;
+﻿using Backend.Core.Models;
+using Backend.DataAccess;
+using Backend.DataAccess.Models;
+using Backend.DataAccess.Repositories.Interfaces;
 using Dapper;
-using DataAccess.Models;
-using DataAccess.Repositories.Interfaces;
 
-namespace DataAccess.Repositories
+namespace Backend.DataAccess.Repositories
 {
     public class SalespersonRepository : BaseRepository, ISalespersonRepository
     {
@@ -14,11 +15,11 @@ namespace DataAccess.Repositories
         public async Task<IEnumerable<ISalesperson>> GetByDistrictId(int districtId,
             CancellationToken cancellationToken)
         {
-            var sql = "SELECT S.* FROM Salesperson S " +
+            var sql = "SELECT S.*, 'Primary' as IsPrimary FROM Salesperson S " +
                       "INNER JOIN District D ON S.Id = D.PrimarySalespersonId " +
                       "WHERE D.Id = @districtId " +
                       "UNION " +
-                      "SELECT S.* " +
+                      "SELECT S.*, 'Secondary' as IsPrimary " +
                       "FROM Salesperson S " +
                       "INNER JOIN SalespersonDistrict SD ON S.Id = SD.SalespersonId " +
                       "INNER JOIN District D ON SD.DistrictId = D.Id " +

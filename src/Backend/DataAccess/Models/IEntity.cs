@@ -1,4 +1,4 @@
-﻿namespace DataAccess.Models
+﻿namespace Backend.DataAccess.Models
 {
     public interface IEntity
     {

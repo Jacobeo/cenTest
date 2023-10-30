@@ -2,7 +2,7 @@
 using Serilog;
 using Serilog.Events;
 
-namespace CompositionRoot.Extensions
+namespace Backend.CompositionRoot.Extensions
 {
     public static class IServiceCollectionExtensions
     {

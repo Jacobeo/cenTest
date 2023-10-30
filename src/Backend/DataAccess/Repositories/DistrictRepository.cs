@@ -1,9 +1,9 @@
-﻿using Core.Models;
+﻿using Backend.Core.Models;
+using Backend.DataAccess.Models;
+using Backend.DataAccess.Repositories.Interfaces;
 using Dapper;
-using DataAccess.Models;
-using DataAccess.Repositories.Interfaces;
 
-namespace DataAccess.Repositories
+namespace Backend.DataAccess.Repositories
 {
     public class DistrictRepository : BaseRepository, IDistrictRepository
     {
@@ -23,15 +23,6 @@ namespace DataAccess.Repositories
 
             var cmd = new CommandDefinition(sql, cancellationToken: cancellationToken);
             return await _connectionFactory.CreateConnection().QueryAsync<District>(cmd);
-        }
-
-
-        public async Task<IDistrictDetails> GetDistrictDetails(int id, CancellationToken cancellationToken)
-        {
-            var salespersons = await _salespersonRepository.GetByDistrictId(id, cancellationToken);
-            var stores = await _storeRepository.GetByDistrictId(id, cancellationToken);
-
-            return new DistrictDetails(stores, salespersons);
         }
     }
 }

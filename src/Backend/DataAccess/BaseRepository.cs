@@ -1,6 +1,6 @@
-﻿using DataAccess.Repositories.Interfaces;
+﻿using Backend.DataAccess.Repositories.Interfaces;
 
-namespace DataAccess
+namespace Backend.DataAccess
 {
     public abstract class BaseRepository
     {

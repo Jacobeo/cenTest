@@ -5,7 +5,7 @@ services:
     image: ${DOCKER_REGISTRY-}api
     build:
       context: .
-      dockerfile: src/Backend/api/Dockerfile
+      dockerfile: src/Backend/API/Dockerfile
     environment:
       ConnectionStrings__DefaultConnection: "Server=mssql;Database=master;User Id=Centrica;Password=${Centrica_PASSWORD}"
     depends_on:

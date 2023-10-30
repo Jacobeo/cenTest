@@ -1,9 +1,10 @@
-﻿using DataAccess;
-using DataAccess.Repositories;
-using DataAccess.Repositories.Interfaces;
+﻿using Backend.Core;
+using Backend.DataAccess;
+using Backend.DataAccess.Repositories;
+using Backend.DataAccess.Repositories.Interfaces;
 using SimpleInjector;
 
-namespace CompositionRoot.Extensions
+namespace Backend.CompositionRoot.Extensions
 {
     public static class ContainerExtensions
     {
@@ -14,6 +15,7 @@ namespace CompositionRoot.Extensions
             container.Register<ISalespersonRepository, SalespersonRepository>(Lifestyle.Scoped);
             container.Register<IDistrictRepository, DistrictRepository>(Lifestyle.Scoped);
             container.Register<IStoreRepository, StoreRepository>(Lifestyle.Scoped);
+            container.Register<IDataService, DataService>(Lifestyle.Scoped);
 
             return container;
         }

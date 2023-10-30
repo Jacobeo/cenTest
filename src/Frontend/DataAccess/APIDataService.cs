@@ -34,16 +34,11 @@ namespace UI
             response.EnsureSuccessStatusCode();
             var content = await response.Content.ReadAsStringAsync();
             var details = JsonConvert.DeserializeObject<DistrictDetailDto>(content);
-            var hest = new DistrictDetail
-            {
-                Stores = details.Stores.Select(s => new Store { Id = s.Id, Name = s.Name }).ToList(),
-                Salespersons = details.Salespersons.Select(s => new Salesperson { Id = s.Id, Name = s.Name }).ToList(),
-            };
 
             return new DistrictDetail
             {
                 Stores = details.Stores.Select(s => new Store { Id = s.Id, Name = s.Name }).ToList(),
-                Salespersons = details.Salespersons.Select(s => new Salesperson { Id = s.Id, Name = s.Name }).ToList(),
+                Salespersons = details.Salespersons.Select(s => new Salesperson { Id = s.Id, Name = s.Name, IsPrimary = s.IsPrimary}).ToList(),
             };
         }
     }

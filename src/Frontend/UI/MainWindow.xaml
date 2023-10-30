@@ -19,7 +19,7 @@
                      DisplayMemberPath="Name" />
             <TextBlock Text="Salespersons" />
             <ListBox ItemsSource="{Binding Salespersons}"
-                     DisplayMemberPath="Name" />
+                     DisplayMemberPath="Display" />
         </StackPanel>
     </Grid>
 </Window>

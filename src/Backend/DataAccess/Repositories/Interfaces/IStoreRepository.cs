@@ -1,6 +1,6 @@
-﻿using Core.Models;
+﻿using Backend.Core.Models;
 
-namespace DataAccess.Repositories.Interfaces
+namespace Backend.DataAccess.Repositories.Interfaces
 {
     public interface IStoreRepository
     {

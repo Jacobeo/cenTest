@@ -1,8 +1,8 @@
 ﻿using System.Data;
 using System.Data.SqlClient;
-using DataAccess.Repositories.Interfaces;
+using Backend.DataAccess.Repositories.Interfaces;
 
-namespace DataAccess
+namespace Backend.DataAccess
 {
     public class DbConnectionFactory : IDbConnectionFactory
     {

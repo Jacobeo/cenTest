@@ -1,4 +1,4 @@
-﻿namespace Core.Models
+﻿namespace Backend.Core.Models
 {
     public interface IStore
     {

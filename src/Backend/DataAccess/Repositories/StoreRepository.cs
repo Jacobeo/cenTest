@@ -1,9 +1,10 @@
-﻿using Core.Models;
+﻿using Backend.Core.Models;
+using Backend.DataAccess;
+using Backend.DataAccess.Models;
+using Backend.DataAccess.Repositories.Interfaces;
 using Dapper;
-using DataAccess.Models;
-using DataAccess.Repositories.Interfaces;
 
-namespace DataAccess.Repositories
+namespace Backend.DataAccess.Repositories
 {
     public class StoreRepository : BaseRepository, IStoreRepository
     {

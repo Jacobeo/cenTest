@@ -5,6 +5,7 @@
     <UserSecretsId>9361d9ec-d2ba-4b2d-83e7-b7c8cd1fc885</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileContext>..\..</DockerfileContext>
+    <AssemblyName>Backend.API</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,12 +1,7 @@
-﻿using Microsoft.AspNetCore.Builder;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AspNetCore.Serilog.RequestLoggingMiddleware;
+﻿using AspNetCore.Serilog.RequestLoggingMiddleware;
+using Microsoft.AspNetCore.Builder;
 
-namespace CompositionRoot.Extensions
+namespace Backend.CompositionRoot.Extensions
 {
     public static class IApplicationBuilderExtensions
     {

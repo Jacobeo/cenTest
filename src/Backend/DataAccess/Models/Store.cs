@@ -1,6 +1,6 @@
-﻿using Core.Models;
+﻿using Backend.Core.Models;
 
-namespace DataAccess.Models
+namespace Backend.DataAccess.Models
 {
     public class Store : IEntity, IStore
     {
