@@ -50,3 +50,47 @@ BEGIN
     );
 END
 GO
+
+CREATE LOGIN Centrica WITH PASSWORD = '$(User_PASSWORD)', CHECK_POLICY = ON;
+GO
+
+CREATE USER Centrica FOR LOGIN Centrica;
+GO
+
+ALTER USER Centrica WITH DEFAULT_SCHEMA = Centrica
+GO
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON SCHEMA::Centrica TO Centrica;
+GO
+
+INSERT INTO Centrica.Salesperson (Name)
+VALUES('Adele Vance'),
+      ('Diego Siciliani'),
+      ('Grady Archie'),
+      ('Henrietta Mueller')
+GO
+
+INSERT INTO Centrica.District(Name, PrimarySalespersonId)
+VALUES('North Denmark', (SELECT Id From Centrica.Salesperson WHERE Name = 'Adele Vance')),
+      ('South Denmark', (SELECT Id From Centrica.Salesperson WHERE NAME = 'Adele Vance')),
+      ('East Denmark', (SELECT Id From Centrica.Salesperson WHERE NAME = 'Grady Archie')),
+      ('West Denmark', (SELECT Id From Centrica.Salesperson WHERE NAME = 'Henrietta Mueller'))
+GO
+
+INSERT INTO Centrica.SalespersonDistrict(SalespersonId, DistrictId)
+VALUES((SELECT Id From Centrica.Salesperson WHERE Name = 'Diego Siciliani'),  (select Id from Centrica.District where Name = 'North Denmark')),
+    ((SELECT Id From Centrica.Salesperson WHERE Name = 'Diego Siciliani'),  (select Id from Centrica.District where Name = 'South Denmark')),
+    ((SELECT Id From Centrica.Salesperson WHERE Name = 'Diego Siciliani'),  (select Id from Centrica.District where Name = 'East Denmark')),
+    ((SELECT Id From Centrica.Salesperson WHERE Name = 'Henrietta Mueller'),  (select Id from Centrica.District where Name = 'East Denmark')),
+    ((SELECT Id From Centrica.Salesperson WHERE Name = 'Grady Archie'),  (select Id from Centrica.District where Name = 'West Denmark')),
+    ((SELECT Id From Centrica.Salesperson WHERE Name = 'Grady Archie'),  (select Id from Centrica.District where Name = 'North Denmark'))
+
+INSERT INTO centrica.Store(Name, DistrictId)
+VALUES('Store North 1', (SELECT Id FROM Centrica.District WHERE Name = 'North Denmark')),
+    ('Store North 2', (SELECT Id FROM Centrica.District WHERE Name = 'North Denmark')),
+    ('Store South 1', (SELECT Id FROM Centrica.District WHERE Name = 'South Denmark')),
+    ('Store South 2', (SELECT Id FROM Centrica.District WHERE Name = 'South Denmark')),
+    ('Store East 1', (SELECT Id FROM Centrica.District WHERE Name = 'East Denmark')),
+    ('Store East 2', (SELECT Id FROM Centrica.District WHERE Name = 'East Denmark')),
+    ('Store West 1', (SELECT Id FROM Centrica.District WHERE Name = 'West Denmark')),
+    ('Store West 2', (SELECT Id FROM Centrica.District WHERE Name = 'West Denmark'))
