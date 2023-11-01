@@ -80,6 +80,7 @@ namespace API.Controllers
             }
             return BadRequest("Invalid request");
         }
+
         [HttpDelete("DeleteSalesPerson")]
 
         public async Task<IActionResult> DeleteSalesPerson([FromBody] DeleteSalesPersonRequest request, CancellationToken cancellationToken)

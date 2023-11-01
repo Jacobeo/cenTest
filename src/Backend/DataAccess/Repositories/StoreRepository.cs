@@ -6,9 +6,9 @@ using Dapper;
 
 namespace Backend.DataAccess.Repositories
 {
-    public class StoreRepository : BaseRepository, IStoreRepository
+    public class StoreRepository : BaseRepository<IStore>, IStoreRepository
     {
-        public StoreRepository(IDbConnectionFactory connectionFactory) : base(connectionFactory)
+        public StoreRepository(IDbConnectionFactory connectionFactory, IDatabaseProvider databaseProvider) : base(connectionFactory, databaseProvider)
         {
         }
 
@@ -16,8 +16,9 @@ namespace Backend.DataAccess.Repositories
         {
             var sql = "SELECT * FROM Store where DistrictId = @districtId";
 
-            var cmd = new CommandDefinition(sql, new { districtId }, cancellationToken: cancellationToken);
-            return await _connectionFactory.CreateConnection().QueryAsync<Store>(cmd);
+            using var connection = _connectionFactory.CreateConnection();
+            var stores = await _databaseProvider.QueryAsync<Store>(connection, sql, new { districtId });
+            return stores;
         }
     }
 }

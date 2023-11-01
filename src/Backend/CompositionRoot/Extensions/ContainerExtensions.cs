@@ -17,6 +17,9 @@ namespace Backend.CompositionRoot.Extensions
             container.Register<IStoreRepository, StoreRepository>(Lifestyle.Scoped);
             container.Register<IDataService, DataService>(Lifestyle.Scoped);
 
+            container.Register<IDatabaseProvider, DapperProvider>(Lifestyle.Singleton);
+
+
             return container;
         }
     }

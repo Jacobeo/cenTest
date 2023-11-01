@@ -5,23 +5,17 @@ using Dapper;
 
 namespace Backend.DataAccess.Repositories
 {
-    public class DistrictRepository : BaseRepository, IDistrictRepository
+    public class DistrictRepository : BaseRepository<District>, IDistrictRepository
     {
-        private readonly ISalespersonRepository _salespersonRepository;
-        private readonly IStoreRepository _storeRepository;
-
-        public DistrictRepository(IDbConnectionFactory connectionFactory, IStoreRepository storeRepository,
-            ISalespersonRepository salespersonRepository) : base(connectionFactory)
+        public DistrictRepository(IDbConnectionFactory connectionFactory, IDatabaseProvider databaseProvider) : base(connectionFactory, databaseProvider)
         {
-            _storeRepository = storeRepository;
-            _salespersonRepository = salespersonRepository;
         }
 
         public async Task AddPrimarySalesperson(int districtId, int salespersonId, CancellationToken cancellationToken)
         {
             var sql = "UPDATE District SET PrimarySalespersonId = @salespersonId WHERE Id = @districtId";
-            var cmd = new CommandDefinition(sql, new { districtId, salespersonId }, cancellationToken: cancellationToken);
-            await _connectionFactory.CreateConnection().ExecuteAsync(cmd);
+            using var connection = _connectionFactory.CreateConnection();
+            await _databaseProvider.ExecuteAsync(connection, sql, new { districtId, salespersonId }, cancellationToken: cancellationToken);
         }
 
         public async Task AddSecondarySalesperson(int districtId, int salespersonId,
@@ -34,9 +28,8 @@ namespace Backend.DataAccess.Repositories
                 "INSERT INTO SalespersonDistrict (SalespersonId, DistrictId) VALUES (@salespersonId, @districtId)" +
                 "END";
 
-            var cmd = new CommandDefinition(sql, new { districtId, salespersonId },
-                cancellationToken: cancellationToken);
-            await _connectionFactory.CreateConnection().ExecuteAsync(cmd);
+            using var connection = _connectionFactory.CreateConnection();
+            await _databaseProvider.ExecuteAsync(connection, sql, new { districtId, salespersonId }, cancellationToken: cancellationToken);
         }
 
         public async Task DeleteSalesperson(int districtId, int salesPersonId, CancellationToken cancellationToken)
@@ -44,17 +37,17 @@ namespace Backend.DataAccess.Repositories
             var sql =
                 @"DELETE FROM SalespersonDistrict WHERE salesPersonId = @salesPersonId and DistrictId = @districtId";
 
-            var cmd = new CommandDefinition(sql, new { districtId, salesPersonId },
-                cancellationToken: cancellationToken);
-            await _connectionFactory.CreateConnection().ExecuteAsync(cmd);
+            using var connection = _connectionFactory.CreateConnection();
+            await _databaseProvider.ExecuteAsync(connection, sql, new { districtId, salesPersonId }, cancellationToken: cancellationToken);
         }
 
         public virtual async Task<IEnumerable<IDistrict>> GetAllAsync(CancellationToken cancellationToken)
         {
             var sql = "SELECT * FROM District";
 
-            var cmd = new CommandDefinition(sql, cancellationToken: cancellationToken);
-            return await _connectionFactory.CreateConnection().QueryAsync<District>(cmd);
+            using var connection = _connectionFactory.CreateConnection();
+            var districts = await _databaseProvider.QueryAsync<District>(connection, sql);
+            return districts;
         }
     }
 }

@@ -7,9 +7,9 @@ using Dapper;
 
 namespace Backend.DataAccess.Repositories
 {
-    public class SalespersonRepository : BaseRepository, ISalespersonRepository
+    public class SalespersonRepository : BaseRepository<Salesperson>, ISalespersonRepository
     {
-        public SalespersonRepository(IDbConnectionFactory connectionFactory) : base(connectionFactory)
+        public SalespersonRepository(IDbConnectionFactory connectionFactory, IDatabaseProvider databaseProvider) : base(connectionFactory, databaseProvider)
         {
         }
 
@@ -26,15 +26,18 @@ namespace Backend.DataAccess.Repositories
                       "INNER JOIN District D ON SD.DistrictId = D.Id " +
                       "WHERE D.Id = @districtId";
 
-            var cmd = new CommandDefinition(sql, new { districtId }, cancellationToken: cancellationToken);
-            return await _connectionFactory.CreateConnection().QueryAsync<Salesperson>(cmd);
+            using var connection = _connectionFactory.CreateConnection();
+            var salesPersons = await _databaseProvider.QueryAsync<Salesperson>(connection, sql, new { districtId });
+            return salesPersons;
         }
 
         public async Task<IEnumerable<ISalesperson>> GetAllAsync(CancellationToken cancellationToken)
         {
             var sql = "SELECT * FROM Salesperson";
-            var cmd = new CommandDefinition(sql, cancellationToken: cancellationToken);
-            return await _connectionFactory.CreateConnection().QueryAsync<Salesperson>(cmd);
+
+            using var connection = _connectionFactory.CreateConnection();
+            var salesPersons = await _databaseProvider.QueryAsync<Salesperson>(connection, sql);
+            return salesPersons;
         }
     }
 }
