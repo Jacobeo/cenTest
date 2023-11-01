@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows.Input;
 using Core;
 using Core.Models;
 
@@ -11,13 +12,21 @@ namespace UI
         private readonly IDataService _dataService;
         private DistrictDetail _districtDetails;
         private District _selectedDistrict;
+        private Salesperson _selectedSalespersonToAdd;
+
+        public ICommand AddSalespersonCommand { get; }
+
+        public ObservableCollection<Salesperson> AllSalespersons { get; } = new();
 
         public MainViewModel(IDataService dataService)
         {
             _dataService = dataService;
+            AddSalespersonCommand = new RelayCommand(AddSalesperson, CanAddSalesperson);
+
             Stores = new ObservableCollection<Store>();
             Salespersons = new ObservableCollection<Salesperson>();
             LoadDistrictsAsync();
+            LoadAllSalespersons();
         }
 
         public ObservableCollection<District> Districts { get; } = new();
@@ -50,6 +59,20 @@ namespace UI
                 }
             }
         }
+
+        public Salesperson SelectedSalespersonToAdd
+        {
+            get => _selectedSalespersonToAdd;
+            set
+            {
+                if (_selectedSalespersonToAdd != value)
+                {
+                    _selectedSalespersonToAdd = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -84,6 +107,35 @@ namespace UI
                 {
                     Salespersons.Add(salesperson);
                 }
+            }
+        }
+
+        private void AddSalesperson()
+        {
+            if (SelectedDistrict != null && SelectedSalespersonToAdd != null)
+            {
+                _dataService.AddSalesPersonToDistrict(SelectedDistrict.Id, SelectedSalespersonToAdd.Id, SelectedSalespersonToAdd.IsPrimaryBool);
+
+                // Update the UI.
+                if(!Salespersons.Contains(SelectedSalespersonToAdd))
+                {
+                Salespersons.Add(SelectedSalespersonToAdd);
+                }
+            }
+        }
+
+        private bool CanAddSalesperson()
+        {
+            return SelectedDistrict != null && SelectedSalespersonToAdd != null;
+        }
+
+        private async void LoadAllSalespersons()
+        {
+            var allSalespersons = await _dataService.GetAllSalesPersons();
+
+            foreach (var salesperson in allSalespersons)
+            {
+                AllSalespersons.Add(salesperson);
             }
         }
     }

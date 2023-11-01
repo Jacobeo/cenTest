@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Core.Models;
-using DataAccess.Repositories.Interfaces;
+using Backend.Core.Requests;
+using Backend.Core;
+using Backend.Core.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -11,15 +13,10 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class DistrictController : ControllerBase
+    public class DistrictController : APIControllerBase
     {
-        private readonly IDistrictRepository _districtRepository;
-        private readonly ILogger<DistrictController> _logger;
-
-        public DistrictController(IDistrictRepository districtRepository, ILogger<DistrictController> logger)
+        public DistrictController(IDataService dataService, ILogger<DistrictController> logger): base(dataService, logger)
         {
-            _districtRepository = districtRepository;
-            _logger = logger;
         }
 
         [HttpGet]
@@ -27,9 +24,9 @@ namespace API.Controllers
         {
             try
             {
-                var districts = await _districtRepository.GetAllAsync(cancellationToken);
+                var districts = await _dataService.GetAllDistricts(cancellationToken);
 
-                if (districts == null)
+                if (districts.ToList().Count == 0)
                 {
                     return NotFound();
                 }
@@ -49,7 +46,7 @@ namespace API.Controllers
         {
             try
             {
-                var districtDetails = await _districtRepository.GetDistrictDetails(districtId, cancellationToken);
+                var districtDetails = await _dataService.GetDistrictDetails(districtId, cancellationToken);
 
                 if (districtDetails == null)
                 {
@@ -65,11 +62,42 @@ namespace API.Controllers
             }
         }
 
-        private (string ErrorCode, string ErrorMessage) HandleException(Exception ex)
+        [HttpPost("AddSalesPerson")]
+        public async Task<IActionResult> AddSalesPerson([FromBody] AddSalesPersonRequest request, CancellationToken cancellationToken)
         {
-            var errorCode = Guid.NewGuid().ToString();
-            _logger.LogError($"ErrorCode: {errorCode}\n" + ex, "An error occurred while processing your request.");
-            return (errorCode, "An error occurred while processing your request.");
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    await _dataService.AddSalesPersonToDistrict(request.DistrictId,request.SalesPersonId, request.IsPrimary, cancellationToken);
+                    return Ok("SalesPerson added successfully.");
+                }
+                catch (Exception ex)
+                {
+                    var (errorCode, errorMessage) = HandleException(ex);
+                    return StatusCode(500, new { errorCode, errorMessage });
+                }
+            }
+            return BadRequest("Invalid request");
+        }
+        [HttpDelete("DeleteSalesPerson")]
+
+        public async Task<IActionResult> DeleteSalesPerson([FromBody] DeleteSalesPersonRequest request, CancellationToken cancellationToken)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    await _dataService.DeleteSalesPersonFromDistrict(request.DistrictId, request.SalesPersonId, cancellationToken);
+                    return Ok("SalesPerson deleted successfully.");
+                }
+                catch (Exception ex)
+                {
+                    var (errorCode, errorMessage) = HandleException(ex);
+                    return StatusCode(500, new { errorCode, errorMessage });
+                }
+            }
+            return BadRequest("Invalid request");
         }
     }
 }

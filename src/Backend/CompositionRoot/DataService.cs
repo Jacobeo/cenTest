@@ -1,5 +1,6 @@
 ﻿using Backend.Core;
 using Backend.Core.Models;
+using Backend.Core.Requests;
 using Backend.DataAccess.Models;
 using Backend.DataAccess.Repositories.Interfaces;
 
@@ -19,9 +20,32 @@ namespace Backend.CompositionRoot
             _districtRepository = districtRepository;
         }
 
+        public async Task AddSalesPersonToDistrict(int districtId, int salesPersonId, bool isPrimary, CancellationToken cancellationToken)
+        {
+            if (isPrimary)
+            {
+                await _districtRepository.AddPrimarySalesperson(districtId, salesPersonId, cancellationToken);
+                await _districtRepository.DeleteSalesperson(districtId, salesPersonId, cancellationToken);
+            }
+            else
+            {
+                await _districtRepository.AddSecondarySalesperson(districtId, salesPersonId, cancellationToken);
+            }
+        }
+
+        public async Task DeleteSalesPersonFromDistrict(int districtId, int salesPersonId, CancellationToken cancellation)
+        {
+            await _districtRepository.DeleteSalesperson(districtId, salesPersonId, cancellation);
+        }
+
         public Task<IEnumerable<IDistrict>> GetAllDistricts(CancellationToken cancellationToken)
         {
             return _districtRepository.GetAllAsync(cancellationToken);
+        }
+
+        public Task<IEnumerable<ISalesperson>> GetAllSalespersons(CancellationToken cancellationToken)
+        {
+            return _salespersonRepository.GetAllAsync(cancellationToken);
         }
 
         public async Task<IDistrictDetails> GetDistrictDetails(int id, CancellationToken cancellationToken)

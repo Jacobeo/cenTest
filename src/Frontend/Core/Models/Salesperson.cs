@@ -6,5 +6,6 @@
         public string Name { get; set; }
         public string Display => $"{Name} - {IsPrimary}";
         public string IsPrimary { get; set; }
+        public bool IsPrimaryBool => IsPrimary == "Primary";
     }
 }

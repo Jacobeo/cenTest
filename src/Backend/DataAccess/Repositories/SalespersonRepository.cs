@@ -1,4 +1,5 @@
-﻿using Backend.Core.Models;
+﻿using System.Net.Sockets;
+using Backend.Core.Models;
 using Backend.DataAccess;
 using Backend.DataAccess.Models;
 using Backend.DataAccess.Repositories.Interfaces;
@@ -26,6 +27,13 @@ namespace Backend.DataAccess.Repositories
                       "WHERE D.Id = @districtId";
 
             var cmd = new CommandDefinition(sql, new { districtId }, cancellationToken: cancellationToken);
+            return await _connectionFactory.CreateConnection().QueryAsync<Salesperson>(cmd);
+        }
+
+        public async Task<IEnumerable<ISalesperson>> GetAllAsync(CancellationToken cancellationToken)
+        {
+            var sql = "SELECT * FROM Salesperson";
+            var cmd = new CommandDefinition(sql, cancellationToken: cancellationToken);
             return await _connectionFactory.CreateConnection().QueryAsync<Salesperson>(cmd);
         }
     }
